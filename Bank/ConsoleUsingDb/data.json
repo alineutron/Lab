@@ -1,0 +1,1 @@
+{"LoanPayouts":[{"PersonNumber":"123","LoanProduct":1,"PayoutDate":"2018-08-03T10:00:00","AdministrtionFee":100.0}],"LoanrePayments":[{"PersonNumber":"123","LoanProduct":1,"RepaymentDate":"2018-09-03T10:00:00","RepaymentAmount":162.0}],"AdminAmount":{"SmallLoan":0.0,"LargeLoan":100.0,"FastLoan":500.0}}
