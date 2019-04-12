@@ -1,10 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿
+
+using System;
 using System.IO;
-using System.Linq;
-using System.Runtime.Serialization.Formatters.Binary;
-using System.Text;
-using System.Threading.Tasks;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Json;
+using System.Xml;
+using System.Xml.Serialization;
 
 namespace TryFormaters
 {
@@ -12,56 +13,43 @@ namespace TryFormaters
 	{
 		static void Main(string[] args)
 		{
-			var exmaple = new BinaryFormatersExmaple();
-			exmaple.LetsDoIt();
+			var example = new FormaterExample();
+			example.LetsDoIt();
 		}
+		
 	}
-
-	public class BinaryFormatersExmaple
+	public class FormaterExample
 	{
 		public void LetsDoIt()
 		{
-			var listOfName = new List<string>();
-			listOfName.Add("object1");
-			listOfName.Add("object2");
-			listOfName.Add("object3");
+			var p = new Person() { LastName = "Mirza", FirstName = "asad" };
+			XmlSerializer serializer = new XmlSerializer(typeof(Person));
+			Stream writer = new FileStream("xmlserializerExample.xml", FileMode.Create);
+			// Serialize the object, and close the TextWriter 
+			serializer.Serialize(writer, p);
+			writer.Close();
 
-			var fs = new FileStream("datafile.dat", FileMode.Create);
-			BinaryFormatter formatter = new BinaryFormatter();
-			try
-			{
-				formatter.Serialize(fs, listOfName);
-			}
-			catch (Exception)
-			{
-				Console.WriteLine("some error");
-
-			}
-			finally
-			{
-				fs.Close();
-			}
-
-			Console.WriteLine("Serialization done. Press enter to continue deserializing it");
+			Console.WriteLine("Serialization done press enter to deserialize");
 			Console.ReadLine();
 
-			fs = new FileStream("datafile.dat",FileMode.Open);
-			try
+			Person i;
+			using (Stream reader = new FileStream("xmlserializerExample.xml", FileMode.Open))
 			{
-				var list = (List<string>) formatter.Deserialize(fs);
-				list.ForEach(x => { Console.WriteLine(x); });
+				i = (Person)serializer.Deserialize(reader);
+			}
 
-			}
-			catch (Exception)
-			{
-				Console.WriteLine("Something happend");
-
-			}
-			finally
-			{
-				fs.Close();
-			}
+			Console.WriteLine($"{i.FirstName}     {i.LastName}");
 			Console.ReadLine();
 		}
 	}
+
+	[DataContract(Name = "Customer", Namespace = "http://www.google.com")]
+	public class Person
+	{
+		[DataMember()]
+		public string FirstName { get; set; }
+		[DataMember]
+		public string LastName { get; set; }
+	}
+
 }
